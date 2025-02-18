@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../providers/counter_provider.dart';
 
-class DetailScreen extends StatelessWidget {
-
+class DetailScreen extends ConsumerWidget {
   const DetailScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Se esta leyendo el estado del contador.
+    final counter = ref.watch(counterProvider);
+
     return  GestureDetector(
       onHorizontalDragEnd: (details) {
         if (details.primaryVelocity! < 0) { // Swipe
@@ -15,7 +19,7 @@ class DetailScreen extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Detalles'),
+          title: Text('Details'),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
@@ -28,9 +32,8 @@ class DetailScreen extends StatelessWidget {
             },
           ),
         ),
-        // drawer: const MainMenu(),
         body: Center(
-          child: Text('Page Details:', style: TextStyle(fontSize: 24)),
+          child: Text('Page Details: $counter', style: TextStyle(fontSize: 24)),
         ),
       ),
     );

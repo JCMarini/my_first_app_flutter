@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mi_first_app/screens/splash_screen.dart';
 import 'package:mi_first_app/screens/welcome_screen.dart';
 import 'package:mi_first_app/screens/home_screen.dart';
 import 'package:mi_first_app/screens/detail_screen.dart';
