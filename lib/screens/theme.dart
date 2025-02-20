@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 // 🎨 Tema Claro
 final ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
-  primaryColor: Colors.blue,
+  primaryColor: Color(0xFF74B7E8),
   scaffoldBackgroundColor: Colors.white,
   appBarTheme: AppBarTheme(
-    backgroundColor: Colors.blue,
+    backgroundColor:  Color(0xFF74B7E8),
     titleTextStyle: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
     iconTheme: IconThemeData(color: Colors.white),
   ),
   textTheme: TextTheme(
     bodyMedium: TextStyle(color: Colors.black, fontSize: 16),
-    headlineLarge: TextStyle(color: Colors.blue, fontSize: 24, fontWeight: FontWeight.bold),
+    headlineLarge: TextStyle(color: Color(0xFF74B7E8), fontSize: 24, fontWeight: FontWeight.bold),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      backgroundColor: Colors.blue,
+      backgroundColor: Color(0xFF74B7E8),
       foregroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -27,20 +27,20 @@ final ThemeData lightTheme = ThemeData(
 // 🌙 Tema Oscuro
 final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
-  primaryColor: Colors.teal,
+  primaryColor: Color(0xFF101E50),
   scaffoldBackgroundColor: Color(0xFF121212),
   appBarTheme: AppBarTheme(
-    backgroundColor: Colors.teal,
+    backgroundColor: Color(0xFF101E50),
     titleTextStyle: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
     iconTheme: IconThemeData(color: Colors.white),
   ),
   textTheme: TextTheme(
     bodyMedium: TextStyle(color: Colors.white70, fontSize: 16),
-    headlineLarge: TextStyle(color: Colors.teal, fontSize: 24, fontWeight: FontWeight.bold),
+    headlineLarge: TextStyle(color: Color(0xFF101E50), fontSize: 24, fontWeight: FontWeight.bold),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      backgroundColor: Colors.teal,
+      backgroundColor: Color(0xFF101E50),
       foregroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),

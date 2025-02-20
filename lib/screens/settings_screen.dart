@@ -13,12 +13,6 @@ class SettingsScreen extends ConsumerWidget {
     final themeNotifier = ref.read(themeProvider.notifier);
 
     return GestureDetector(
-      onHorizontalDragEnd: (details) {
-        if (details.primaryVelocity! < 0) {
-          // Swipe
-          GoRouter.of(context).go('/home'); // Regresar a Home
-        }
-      },
       child: Scaffold(
         appBar: AppBar(
           title: Text('Settings'),

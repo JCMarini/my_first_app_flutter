@@ -11,19 +11,37 @@ class MainMenu extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           const DrawerHeader(child: Text('Menú')),
+          ElevatedButton.icon(
+            onPressed: () {
+              context.go('/login'); // Regresa a la pantalla de login
+            },
+            icon: Icon(Icons.exit_to_app, color: Colors.white), // Icono de salida
+            label: Text("Salir"),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red, // Color de fondo
+              foregroundColor: Colors.white, // Color del texto
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
           ListTile(
+            leading: Icon(Icons.home),
             title: const Text('Home'),
             onTap: () {
               context.go('/home');
             },
           ),
           ListTile(
+            leading: Icon(Icons.details),
             title: const Text('Details'),
             onTap: () {
               context.go('/detail');
             },
           ),
           ListTile(
+            leading: Icon(Icons.settings),
             title: const Text('Settings'),
             onTap: () {
               context.go('/setting');

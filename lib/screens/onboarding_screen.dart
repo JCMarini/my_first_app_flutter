@@ -68,14 +68,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 // Guardar en SharedPreferences que el usuario ya vio el Onboarding
                 ref.read(firstLaunchProvider.notifier).completeOnboarding();
                 // Navegar a la pantalla principal
-                GoRouter.of(context).go("/home");
+                GoRouter.of(context).go("/login");
               }
             },
             child: Text(_currentPage < 2 ? "Siguiente" : "Empezar"),
           ),
           TextButton(
             onPressed: () {
-              GoRouter.of(context).go("/home");
+              GoRouter.of(context).go("/login");
             },
             child: Text("Omitir"),
           ),
