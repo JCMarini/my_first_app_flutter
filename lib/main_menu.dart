@@ -23,6 +23,12 @@ class MainMenu extends StatelessWidget {
               context.go('/detail');
             },
           ),
+          ListTile(
+            title: const Text('Settings'),
+            onTap: () {
+              context.go('/setting');
+            },
+          ),
         ],
       ),
     );

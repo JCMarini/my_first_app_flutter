@@ -1,45 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mi_first_app/providers/first_launch_notifier.dart';
+import 'package:mi_first_app/providers/theme_notifier.dart';
+import 'package:mi_first_app/screens/theme.dart';
 import 'router.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-
-  // Verificar si es la primera vez que el usuario abre la app
-  final prefs = await SharedPreferences.getInstance();
-  final isFirstTime = prefs.getBool('is_first_time') ?? true;
-
-  // Si es la primera vez, marcar como no es la primera vez
-  if (isFirstTime) {
-    await prefs.setBool('is_first_time', false);
-  }
-
-  runApp(ProviderScope(child: MyApp(isFirstTime: isFirstTime)));
+  runApp(ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatefulWidget {
-  final bool isFirstTime;
-
-
-  const MyApp({Key? key, required this.isFirstTime}) : super(key: key);
-
+class MyApp extends ConsumerWidget {
   @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeProvider);
+    final isFirstLaunch = ref.watch(firstLaunchProvider);
+    
     return MaterialApp.router(
-      routerConfig: createRouter(widget.isFirstTime),
+      title: 'App Flutter Demo',
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: themeMode,
+      routerConfig: createRouter(isFirstLaunch),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
+

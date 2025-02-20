@@ -2,7 +2,7 @@
     <application
         android:label="mi_first_app"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/splash"
         android:enableOnBackInvokedCallback="true">  <!-- Habilitar OnBackInvokedCallback -->
         <activity
             android:name=".MainActivity"

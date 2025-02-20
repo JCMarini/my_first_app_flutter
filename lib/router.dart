@@ -1,18 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mi_first_app/screens/splash_screen.dart';
-import 'package:mi_first_app/screens/welcome_screen.dart';
+import 'package:mi_first_app/screens/settings_screen.dart';
+import 'package:mi_first_app/screens/onboarding_screen.dart';
 import 'package:mi_first_app/screens/home_screen.dart';
 import 'package:mi_first_app/screens/detail_screen.dart';
 
 GoRouter createRouter(bool isFirstTime) {
   return GoRouter(
-    initialLocation: isFirstTime ? '/welcome' : '/home', // Ruta inicial
+    initialLocation: isFirstTime ? '/onbording' : '/home', // Ruta inicial
     routes: [
       GoRoute(
-        path: '/welcome',
-        builder: (context, state) => const WelcomeScreen(),
+        path: '/onbording',
+        builder: (context, state) => OnboardingScreen(),
       ),
+
       GoRoute(
         path: '/home',
         pageBuilder: (context, state) => _customTransitionPageBuilder<void>(context,state,HomeScreen(),),
@@ -21,6 +22,11 @@ GoRouter createRouter(bool isFirstTime) {
       GoRoute(
         path: '/detail',
         pageBuilder: (context, state) => _customTransitionPageBuilder<void>(context,state,DetailScreen(),),
+      ),
+
+      GoRoute(
+        path: '/setting',
+        pageBuilder: (context, state) => _customTransitionPageBuilder<void>(context,state,SettingsScreen(),),
       ),
     ],
   );
