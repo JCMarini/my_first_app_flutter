@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -10,7 +11,6 @@ import 'home_screen.dart';
 class LoginScreen extends StatelessWidget {
   Duration get loginTime => const Duration(milliseconds: 2250);
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Future<String?> _authUser(LoginData data) async {
     // login con firebase
@@ -59,42 +59,14 @@ class LoginScreen extends StatelessWidget {
           icon: FontAwesomeIcons.google,
           label: 'Google',
           callback: () async {
-            try {
-              final GoogleSignInAccount? googleUser =
-                  await _googleSignIn.signIn();
-              if (googleUser == null)
-                return; // El usuario canceló el inicio de sesión
-
-              final GoogleSignInAuthentication googleAuth =
-                  await googleUser.authentication;
-
-              final AuthCredential credential = GoogleAuthProvider.credential(
-                accessToken: googleAuth.accessToken,
-                idToken: googleAuth.idToken,
-              );
-
-              UserCredential userCredential =
-                await _auth.signInWithCredential(credential,);
-
-              if (userCredential.user != null) {
-                debugPrint("Login exitoso: ${userCredential.user!.email}");
-                GoRouter.of(context).go("/home");
-              } else {
-                debugPrint("Error: No se pudo obtener el usuario");
-              }
-            } catch (e) {
-              debugPrint("Error al iniciar sesión con Google: $e");
-            }
+            _singInWithgoogle(context, _auth);
           },
         ),
         LoginProvider(
           icon: FontAwesomeIcons.facebookF,
           label: 'Facebook',
           callback: () async {
-            debugPrint('start facebook sign in');
-            await Future.delayed(loginTime);
-            debugPrint('stop facebook sign in');
-            return null;
+            _signInWithFacebook(context, _auth);
           },
         ),
       ],
@@ -105,3 +77,62 @@ class LoginScreen extends StatelessWidget {
     );
   }
 }
+
+Future<void> _singInWithgoogle(BuildContext context, FirebaseAuth _auth) async {
+  try {
+    final GoogleSignIn _googleSignIn = GoogleSignIn();
+    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+    if (googleUser == null) {
+      // El usuario canceló el inicio de sesión
+      throw new Exception("El usario cancelo");
+    }
+
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    UserCredential userCredential = await _auth.signInWithCredential(
+      credential,
+    );
+
+    if (userCredential.user != null) {
+      debugPrint("Login exitoso: ${userCredential.user!.email}");
+      GoRouter.of(context).go("/home");
+    } else {
+      debugPrint("Error: No se pudo obtener el usuario");
+    }
+  } catch (e) {
+    debugPrint("Error al iniciar sesión con Google: $e");
+    GoRouter.of(context).go("/login");
+  }
+}
+
+
+Future<void> _signInWithFacebook(BuildContext context, FirebaseAuth _auth) async {
+  try {
+    // Iniciar sesión con Facebook
+    final LoginResult result = await FacebookAuth.instance.login();
+
+    if (result.status == LoginStatus.success) {
+      final AccessToken accessToken = result.accessToken!;
+      final OAuthCredential credential
+          = FacebookAuthProvider.credential(accessToken.tokenString);
+
+      UserCredential userCredential = await _auth.signInWithCredential(credential);
+
+      if (userCredential.user != null) {
+        debugPrint("Login exitoso con Facebook: ${userCredential.user!.email}");
+        GoRouter.of(context).go("/home");
+      }
+    } else {
+      debugPrint("Error en Facebook Sign-In: ${result.message}");
+    }
+  } catch (e) {
+    debugPrint("Error al iniciar sesión con Facebook: $e");
+  }
+}
+
