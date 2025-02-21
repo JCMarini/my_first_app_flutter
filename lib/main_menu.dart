@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mi_first_app/providers/authentication_provider.dart';
 
-class MainMenu extends StatelessWidget {
+class MainMenu extends ConsumerWidget {
   const MainMenu({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
           const DrawerHeader(child: Text('Menú')),
           ElevatedButton.icon(
-            onPressed: () {
+            onPressed: () async {
+              await ref.read(authProvider.notifier).signOut();
               context.go('/login'); // Regresa a la pantalla de login
             },
             icon: Icon(Icons.exit_to_app, color: Colors.white), // Icono de salida

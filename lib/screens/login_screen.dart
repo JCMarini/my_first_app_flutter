@@ -1,15 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_login/flutter_login.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import 'home_screen.dart';
-
-class LoginScreen extends StatelessWidget {
-  Duration get loginTime => const Duration(milliseconds: 2250);
+class LoginScreen extends ConsumerWidget {
+  // El tiempo que tarda en la animación
+  Duration get loginTime => Duration(milliseconds: 2250);
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<String?> _authUser(LoginData data) async {
@@ -37,7 +36,38 @@ class LoginScreen extends StatelessWidget {
     }
   }
 
+  // Método de inicio de sesión con Google
+  Future<String?> _signInWithGoogle(BuildContext context, WidgetRef ref) async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+
+      if (googleUser == null) {
+        return 'Error: el usuario cancelo el login con google';
+      }
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      final UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithCredential(credential);
+
+      // Aquí puedes usar Riverpod para actualizar el estado de autenticación
+      // ref.read(authProvider.notifier);
+
+      debugPrint('Se inicio sesion desde google : ' + userCredential.user.toString());
+      return null; // Significa que la autenticación fue exitosa
+    } catch (e) {
+      return 'Error: ${e.toString()}'; // ⚠️ Muestra error en pantalla
+    }
+  }
+
+  // Metodo para recuperar tu contraseña
   Future<String> _recoverPassword(String email) async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
     try {
       await _auth.sendPasswordResetEmail(email: email);
       return "Email de recuperación invalido"; // ✅ Email de recuperación enviado
@@ -47,7 +77,8 @@ class LoginScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Si el usuario no está autenticado, mostramos el formulario de login
     return FlutterLogin(
       title: 'Login',
       logo: const AssetImage('assets/images/badger1.jpg'),
@@ -59,80 +90,15 @@ class LoginScreen extends StatelessWidget {
           icon: FontAwesomeIcons.google,
           label: 'Google',
           callback: () async {
-            _singInWithgoogle(context, _auth);
-          },
-        ),
-        LoginProvider(
-          icon: FontAwesomeIcons.facebookF,
-          label: 'Facebook',
-          callback: () async {
-            _signInWithFacebook(context, _auth);
+            _signInWithGoogle(context, ref);
           },
         ),
       ],
       onSubmitAnimationCompleted: () {
         GoRouter.of(context).go("/home");
       },
+
       onRecoverPassword: _recoverPassword,
     );
   }
 }
-
-Future<void> _singInWithgoogle(BuildContext context, FirebaseAuth _auth) async {
-  try {
-    final GoogleSignIn _googleSignIn = GoogleSignIn();
-    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-    if (googleUser == null) {
-      // El usuario canceló el inicio de sesión
-      throw new Exception("El usario cancelo");
-    }
-
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    UserCredential userCredential = await _auth.signInWithCredential(
-      credential,
-    );
-
-    if (userCredential.user != null) {
-      debugPrint("Login exitoso: ${userCredential.user!.email}");
-      GoRouter.of(context).go("/home");
-    } else {
-      debugPrint("Error: No se pudo obtener el usuario");
-    }
-  } catch (e) {
-    debugPrint("Error al iniciar sesión con Google: $e");
-    GoRouter.of(context).go("/login");
-  }
-}
-
-
-Future<void> _signInWithFacebook(BuildContext context, FirebaseAuth _auth) async {
-  try {
-    // Iniciar sesión con Facebook
-    final LoginResult result = await FacebookAuth.instance.login();
-
-    if (result.status == LoginStatus.success) {
-      final AccessToken accessToken = result.accessToken!;
-      final OAuthCredential credential
-          = FacebookAuthProvider.credential(accessToken.tokenString);
-
-      UserCredential userCredential = await _auth.signInWithCredential(credential);
-
-      if (userCredential.user != null) {
-        debugPrint("Login exitoso con Facebook: ${userCredential.user!.email}");
-        GoRouter.of(context).go("/home");
-      }
-    } else {
-      debugPrint("Error en Facebook Sign-In: ${result.message}");
-    }
-  } catch (e) {
-    debugPrint("Error al iniciar sesión con Facebook: $e");
-  }
-}
-
